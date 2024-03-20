@@ -1,6 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 import joblib
 import numpy as np
 import sqlite3
