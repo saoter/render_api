@@ -3,5 +3,4 @@ fastapi
 docker
 seaborn
 pandas
-sqlite3
 joblib
