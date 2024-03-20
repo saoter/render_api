@@ -102,19 +102,19 @@ def get_status():
 ######################################################################
     
 class PredictionRequest(BaseModel):
-    model_id: int
+    prediction_model_id: int  # Renamed from model_id
     bill_length_mm: float
     bill_depth_mm: float
     flipper_length_mm: float
     body_mass_g: float
 
 def load_model(model_id: int):
-    model_path = f"models/model_v{model_id}.joblib"
+    model_path = f"models/model_v{prediction_model_id}.joblib"
     try:
         model = joblib.load(model_path)
         return model
     except FileNotFoundError:
-        raise HTTPException(status_code=404, detail=f"Model with ID {model_id} not found")
+        raise HTTPException(status_code=404, detail=f"Model with ID {prediction_model_id} not found")
 
 @app.post("/predict/")
 def predict(request: PredictionRequest):
