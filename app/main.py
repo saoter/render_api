@@ -118,7 +118,7 @@ def load_model(model_id: int):
 
 @app.post("/predict/")
 def predict(request: PredictionRequest):
-    model = load_model(request.model_id)
+    model = load_model(request.prediction_model_id)
     features = pd.DataFrame([[
         request.bill_length_mm,
         request.bill_depth_mm,
