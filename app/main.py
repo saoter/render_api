@@ -110,7 +110,7 @@ class PredictionRequest(BaseModel):
 
 def load_model(model_id: int):
     # Corrected to use the function parameter `model_id`
-    model_path = f"models/model_v{model_id}.joblib"
+    model_path = f"models/model_v{model_id-100}.joblib"
     try:
         model = joblib.load(model_path)
         return model
