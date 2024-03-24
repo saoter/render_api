@@ -1,20 +1,23 @@
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional
 import joblib
 import numpy as np
 import sqlite3
 import pandas as pd
 
+# We initiate the API app
 app = FastAPI()
 
+# We locate database
 DATABASE_URL = "db/db_penguins.db"
 
 
 ######################################################################
 ######################################################################
-
-def fetch_penguins(island_id: Optional[int] = None, status_id: Optional[int] = None, species: Optional[str] = None, model_id: Optional[int] = None) -> list:
+# We create end point function to access penguin data
+# We add 3 optional conditions
+def fetch_penguins(island_id: Optional[int] = None, status_id: Optional[int] = None, species: Optional[str] = None -> list:
     conn = sqlite3.connect(DATABASE_URL)
     conditions = []
     
@@ -24,8 +27,6 @@ def fetch_penguins(island_id: Optional[int] = None, status_id: Optional[int] = N
         conditions.append(f"status_id = {status_id}")
     if species is not None:
         conditions.append(f"species = '{species}'")
-    if model_id is not None:
-        conditions.append(f"model_id = {model_id}")
 
     query_conditions = " AND ".join(conditions)
     query = "SELECT * FROM PENGUINS"
@@ -39,9 +40,9 @@ def fetch_penguins(island_id: Optional[int] = None, status_id: Optional[int] = N
         conn.close()
 
 @app.get("/penguins/")
-def get_penguins(island_id: Optional[int] = None, status_id: Optional[int] = None, species: Optional[str] = None, model_id: Optional[int] = None):
+def get_penguins(island_id: Optional[int] = None, status_id: Optional[int] = None, species: Optional[str] = None:
     try:
-        penguins_data = fetch_penguins(island_id, status_id, species, model_id)
+        penguins_data = fetch_penguins(island_id, status_id, species)
         return {"penguins": penguins_data}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -49,6 +50,8 @@ def get_penguins(island_id: Optional[int] = None, status_id: Optional[int] = Non
 
 ######################################################################
 ######################################################################
+# We create end point function to access model data
+# We add 1 optional conditions
 
 def fetch_model(model_id: Optional[int] = None) -> List[dict]:
     conn = sqlite3.connect(DATABASE_URL)
@@ -72,14 +75,16 @@ def fetch_model(model_id: Optional[int] = None) -> List[dict]:
 @app.get("/model/")
 def get_model(model_id: Optional[int] = Query(None, title="Model ID", description="The ID of the model to fetch")):
     try:
-        model_data = fetch_model(model_id)
+        model_data = fetch_model_data(model_id)
         return {"model": model_data}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
 ######################################################################
 ######################################################################
-    
+# We create end point function to access status data
+# We do not add any conditions
+
 def fetch_status() -> List[dict]:
     conn = sqlite3.connect(DATABASE_URL)
     try:
@@ -100,28 +105,29 @@ def get_status():
 
 ######################################################################
 ######################################################################
-    
+# We want to make POST call for making predictions
+
+# What we expect to receive from the call    
 class PredictionRequest(BaseModel):
-    prediction_model_id: int
+    model_id: int
     bill_length_mm: float
     bill_depth_mm: float
     flipper_length_mm: float
     body_mass_g: float
 
+# Function to make prediction. First load teh model 
 def load_model(model_id: int):
-    # Corrected to use the function parameter `model_id`
-    model_path = f"models/model_v{model_id-100}.joblib"
+    model_path = f"models/model_v{model_id}.joblib"
     try:
         model = joblib.load(model_path)
         return model
     except FileNotFoundError:
-        # Corrected variable name in the error message
         raise HTTPException(status_code=404, detail=f"Model with ID {model_id} not found")
 
+# Making the end point for prediction
 @app.post("/predict/")
 def predict(request: PredictionRequest):
-    # Corrected to use `request.prediction_model_id`
-    model = load_model(request.prediction_model_id)
+    model = load_model(request.model_id)
     features = pd.DataFrame([[
         request.bill_length_mm,
         request.bill_depth_mm,
