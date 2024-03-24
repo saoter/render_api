@@ -17,7 +17,7 @@ DATABASE_URL = "db/db_penguins.db"
 ######################################################################
 # We create end point function to access penguin data
 # We add 3 optional conditions
-def fetch_penguins(island_id: Optional[int] = None, status_id: Optional[int] = None, species: Optional[str] = None -> list:
+def fetch_penguins(island_id: Optional[int] = None, status_id: Optional[int] = None, species: Optional[str] = None) -> list:
     conn = sqlite3.connect(DATABASE_URL)
     conditions = []
     
