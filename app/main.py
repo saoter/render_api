@@ -40,7 +40,7 @@ def fetch_penguins(island_id: Optional[int] = None, status_id: Optional[int] = N
         conn.close()
 
 @app.get("/penguins/")
-def get_penguins(island_id: Optional[int] = None, status_id: Optional[int] = None, species: Optional[str] = None:
+def fetch_penguins(island_id: Optional[int] = None, status_id: Optional[int] = None, species: Optional[str] = None) -> list:
     try:
         penguins_data = fetch_penguins(island_id, status_id, species)
         return {"penguins": penguins_data}
@@ -75,7 +75,7 @@ def fetch_model(model_id: Optional[int] = None) -> List[dict]:
 @app.get("/model/")
 def get_model(model_id: Optional[int] = Query(None, title="Model ID", description="The ID of the model to fetch")):
     try:
-        model_data = fetch_model_data(model_id)
+        model_data = fetch_model(model_id)
         return {"model": model_data}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
