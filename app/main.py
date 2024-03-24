@@ -9,6 +9,21 @@ import pandas as pd
 # We initiate the API app
 app = FastAPI()
 
+@app.get("/", response_class=HTMLResponse)
+def read_root():
+    return """
+    <html>
+        <head>
+            <title>What kind of pengiun is this penguin?</title>
+        </head>
+        <body>
+            <h1>Welcome to My FastAPI Application!</h1>
+            <p>This is a custom landing page.</p>
+        </body>
+    </html>
+    """
+
+
 # We locate database
 DATABASE_URL = "db/db_penguins.db"
 
