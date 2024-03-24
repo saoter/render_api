@@ -54,7 +54,8 @@ def fetch_penguins(island_id: Optional[int] = None, status_id: Optional[int] = N
         conn.close()
 
 @app.get("/penguins/")
-def get_penguins(island_id: Optional[int] = None, status_id: Optional[int] = None, species: Optional[str] = None:
+def get_penguins(island_id: Optional[int] = None, status_id: Optional[int] = None, species: Optional[str] = None):
+
     try:
         penguins_data = fetch_penguins(island_id, status_id, species)
         return {"penguins": penguins_data}
