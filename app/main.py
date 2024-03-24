@@ -32,22 +32,20 @@ DATABASE_URL = "db/db_penguins.db"
 ######################################################################
 # We create end point function to access penguin data
 # We add 3 optional conditions
+
 def fetch_penguins(island_id: Optional[int] = None, status_id: Optional[int] = None, species: Optional[str] = None) -> list:
     conn = sqlite3.connect(DATABASE_URL)
-    conditions = []
-    
+    conditions = []    
     if island_id is not None:
         conditions.append(f"island_id = {island_id}")
     if status_id is not None:
         conditions.append(f"status_id = {status_id}")
     if species is not None:
         conditions.append(f"species = '{species}'")
-
     query_conditions = " AND ".join(conditions)
     query = "SELECT * FROM PENGUINS"
     if query_conditions:
         query += f" WHERE {query_conditions}"
-
     try:
         data = pd.read_sql_query(query, conn)
         return data.to_dict(orient="records")
