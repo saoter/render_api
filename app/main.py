@@ -73,7 +73,7 @@ def fetch_model(model_id: Optional[int] = None) -> list[dict]:
 
 
 @app.get("/model/")
-def get_model(model_id: Optional[int] = Query(None, title="Model ID", description="The ID of the model to fetch")):
+def get_model(model_id: Optional[int] = query(None, title="Model ID", description="The ID of the model to fetch")):
     try:
         model_data = fetch_model(model_id)
         return {"model": model_data}
@@ -85,7 +85,7 @@ def get_model(model_id: Optional[int] = Query(None, title="Model ID", descriptio
 # We create end point function to access status data
 # We do not add any conditions
 
-def fetch_status() -> List[dict]:
+def fetch_status() -> list[dict]:
     conn = sqlite3.connect(DATABASE_URL)
     try:
         query = "SELECT * FROM STATUS"
