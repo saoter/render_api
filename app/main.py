@@ -53,7 +53,7 @@ def fetch_penguins(island_id: Optional[int] = None, status_id: Optional[int] = N
 # We create end point function to access model data
 # We add 1 optional conditions
 
-def fetch_model(model_id: Optional[int] = None) -> List[dict]:
+def fetch_model(model_id: Optional[int] = None) -> list[dict]:
     conn = sqlite3.connect(DATABASE_URL)
     try:
         if model_id is not None:
